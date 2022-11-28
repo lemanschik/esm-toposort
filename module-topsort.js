@@ -1,40 +1,4 @@
-
-/**
- * Topological sorting function
- *
- * @param {Array} edges
- * @returns {Array}
- */
-
-module.exports = function(edges) {
-  return toposort(uniqueNodes(edges), edges)
-}
-
-module.exports.array = toposort
-
-function toposort(nodes, edges) {
-  var cursor = nodes.length
-    , sorted = new Array(cursor)
-    , visited = {}
-    , i = cursor
-    // Better data structures make algorithm much faster.
-    , outgoingEdges = makeOutgoingEdges(edges)
-    , nodesHash = makeNodesHash(nodes)
-
-  // check for unknown nodes
-  edges.forEach(function(edge) {
-    if (!nodesHash.has(edge[0]) || !nodesHash.has(edge[1])) {
-      throw new Error('Unknown node. There is an unknown node in the supplied edges.')
-    }
-  })
-
-  while (i--) {
-    if (!visited[i]) visit(nodes[i], i, new Set())
-  }
-
-  return sorted
-
-  function visit(node, i, predecessors) {
+ const visit(node, i, predecessors) => {
     if(predecessors.has(node)) {
       var nodeRep
       try {
@@ -65,11 +29,38 @@ function toposort(nodes, edges) {
     }
 
     sorted[--cursor] = node
+}
+/**
+ * Topological sorting function
+ *
+ * @param {Array} edges
+ * @returns {Array}
+ */
+const toposort = (nodes, edges) => {
+  let cursor = nodes.length
+    , sorted = new Array(cursor)
+    , visited = {}
+    , i = cursor
+    // Better data structures make algorithm much faster.
+    , outgoingEdges = makeOutgoingEdges(edges)
+    , nodesHash = makeNodesHash(nodes)
+
+  // check for unknown nodes
+  edges.forEach(function(edge) {
+    if (!nodesHash.has(edge[0]) || !nodesHash.has(edge[1])) {
+      throw new Error('Unknown node. There is an unknown node in the supplied edges.')
+    }
+  })
+
+  while (i--) {
+    if (!visited[i]) visit(nodes[i], i, new Set())
   }
+
+  return sorted;
 }
 
-function uniqueNodes(arr){
-  var res = new Set()
+const uniqueNodes = (arr) =>{
+  const res = new Set()
   for (var i = 0, len = arr.length; i < len; i++) {
     var edge = arr[i]
     res.add(edge[0])
@@ -78,10 +69,10 @@ function uniqueNodes(arr){
   return Array.from(res)
 }
 
-function makeOutgoingEdges(arr){
-  var edges = new Map()
-  for (var i = 0, len = arr.length; i < len; i++) {
-    var edge = arr[i]
+makeOutgoingEdges = (arr) => {
+  const edges = new Map()
+  for (let i = 0, len = arr.length; i < len; i++) {
+    const edge = arr[i]
     if (!edges.has(edge[0])) edges.set(edge[0], new Set())
     if (!edges.has(edge[1])) edges.set(edge[1], new Set())
     edges.get(edge[0]).add(edge[1])
@@ -89,10 +80,19 @@ function makeOutgoingEdges(arr){
   return edges
 }
 
-function makeNodesHash(arr){
-  var res = new Map()
-  for (var i = 0, len = arr.length; i < len; i++) {
+makeNodesHash = (arr) => {
+  const res = new Map()
+  for (let i = 0, len = arr.length; i < len; i++) {
     res.set(arr[i], i)
   }
   return res
 }
+
+const nodesort = (edges) => toposort(uniqueNodes(edges), edges)
+
+export { 
+  visit,
+  nodesort,
+  array: toposort,
+}
+
