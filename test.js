@@ -1,8 +1,11 @@
-var vows = require('vows')
-  , toposort = require('./index')
-  , assert = require('assert')
+import { default as vows } from 'vows';
+import { default as assert } from 'node:assert';
 
-var suite = vows.describe('toposort')
+
+const moduleSort = await import('./module-toposort.js')
+
+
+const suite = vows.describe('toposort')
 suite.addBatch(
 { 'acyclic graphs':
   { topic: function() {
